@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA Storage System - Nature's Data Archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            background: var(--dark);
+            color: #fff;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        /* Pages Container */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* HOME PAGE */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .dna-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #f093fb, #667eea);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: #b8b8d1;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        /* Feature Cards */
+        .features {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        /* HOW IT WORKS PAGE */
+        .content-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .content-section h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .process-steps {
+            margin-top: 3rem;
+        }
+        
+        .step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .step-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 80px;
+        }
+        
+        .step-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .step-content p {
+            color: #b8b8d1;
+            line-height: 1.8;
+        }
+        
+        /* ENCODER PAGE */
+        .encoder-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .encoder-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b8b8d1;
+            font-weight: 500;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .mapping-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .mapping-item label {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.3rem;
+            min-width: 30px;
+        }
+        
+        .mapping-item.base-a label { color: #e74c3c; }
+        .mapping-item.base-t label { color: #3498db; }
+        .mapping-item.base-c label { color: #2ecc71; }
+        .mapping-item.base-g label { color: #f39c12; }
+        
+        .mapping-item input {
+            width: 80px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-encode { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .btn-decode { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .btn-reset { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+        .btn-resimulate { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        #dnaCanvas {
+            width: 100%;
+            height: 250px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-top: 1rem;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 6px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b8b8d1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            word-break: break-all;
+        }
+        
+        .result {
+            background: rgba(46, 204, 113, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #b8b8d1;
+            margin-bottom: 0.8rem;
+        }
+        
+        .result-value {
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .info-box {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .info-box p {
+            color: #b8b8d1;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* ABOUT PAGE */
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .about-content h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .about-content p {
+            color: #b8b8d1;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .about-content h2 {
+            color: var(--accent);
+            font-size: 2rem;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        /* Floating DNA Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating-dna {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .nav-links { display: none; }
+            .step { flex-direction: column; }
+            .cta-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">DNA·Storage</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
+                <li><a href="#" onclick="showPage('encoder')">Encoder</a></li>
+                <li><a href="#" onclick="showPage('how')">How It Works</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <canvas id="dnaBackgroundCanvas" class="dna-background"></canvas>
+            <div class="hero-content floating-dna">
+                <h1>Nature's Data Archive</h1>
+                <p>Discover how the molecular architecture of DNA can revolutionize the way we encode, store, and preserve digital information for millennia.</p>
+                <div class="cta-buttons">
+                    <a href="#" onclick="showPage('encoder')" class="btn btn-primary">Open Encoder</a>
+                    <a href="#" onclick="showPage('how')" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>The Power of DNA Storage</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Ultra-High Density</h3>
+                    <p>Store 215 petabytes in just 1 gram of DNA. That's equivalent to millions of hard drives in the space of a sugar cube.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>Eternal Preservation</h3>
+                    <p>DNA can preserve information for thousands of years without power, immune to electromagnetic interference and data degradation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>Energy Efficient</h3>
+                    <p>No electricity required for storage. DNA maintains data integrity naturally, making it the most sustainable storage medium.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ENCODER PAGE -->
+    <div id="encoder" class="page">
+        <div class="encoder-container">
+            <h1 style="text-align: center; font-size: 3rem; margin-bottom: 2rem; background: linear-gradient(135deg, #667eea, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🧬 DNA Storage Encoder</h1>
+            
+            <div class="info-box">
+                <p><strong>How it works:</strong> Your text is converted to binary (0s and 1s), then mapped to DNA bases (A, T, C, G) using customizable 2-bit encodings.</p>
+                <p><strong>Default Mapping:</strong> A=00, T=01, C=10, G=11</p>
+            </div>
+
+            <div class="encoder-card">
+                <div class="section-title">📝 Input Data</div>
+                <div class="input-group">
+                    <label for="textInput">Enter Text to Encode:</label>
+                    <textarea id="textInput" placeholder="Type your message here...">Hello DNA!</textarea>
+                </div>
+            </div>
+
+            <div class="encoder-card">
+                <div class="section-title">🧬 DNA Base Mappings (Binary)</div>
+                <div class="mapping-grid">
+                    <div class="mapping-item base-a">
+                        <label>A:</label>
+                        <input type="text" id="mapA" value="00" maxlength="2" pattern="[01]{2}">
+                    </div>
+                    <div class="mapping-item base-t">
+                        <label>T:</label>
+                        <input type="text" id="mapT" value="01" maxlength="2" pattern="[01]{2}">
+                    </div>
+                    <div class="mapping-item base-c">
+                        <label>C:</label>
+                        <input type="text" id="mapC" value="10" maxlength="2" pattern="[01]{2}">
+                    </div>
+                    <div class="mapping-item base-g">
+                        <label>G:</label>
+                        <input type="text" id="mapG" value="11" maxlength="2" pattern="[01]{2}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-encode" onclick="encodeText()">🔬 Encode to DNA</button>
+                <button class="btn-decode" onclick="decodeText()">🔓 Decode from DNA</button>
+                <button class="btn-resimulate" onclick="resimulate()">🔄 Re-simulate</button>
+                <button class="btn-reset" onclick="resetAll()">↺ Reset All</button>
+            </div>
+
+            <div class="encoder-card">
+                <div class="section-title">🎨 DNA Sequence Visualization</div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c;"></div>
+                        <span>Adenine (A)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3498db;"></div>
+                        <span>Thymine (T)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2ecc71;"></div>
+                        <span>Cytosine (C)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f39c12;"></div>
+                        <span>Guanine (G)</span>
+                    </div>
+                </div>
+                <canvas id="dnaCanvas"></canvas>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">DNA Sequence</div>
+                        <div class="stat-value" id="dnaSeq">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Sequence Length</div>
+                        <div class="stat-value" id="seqLength">0 bases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Binary Representation</div>
+                        <div class="stat-value" id="binaryRep" style="font-size: 0.9em;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="encoder-card">
+                <div class="section-title">📤 Decoded Output</div>
+                <div class="result">
+                    <div class="result-label">Decoded Text:</div>
+                    <div class="result-value" id="decodedText">Click "Decode from DNA" to see the result</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW IT WORKS PAGE -->
+    <div id="how" class="page">
+        <div class="content-section">
+            <h1>How DNA Storage Works</h1>
+            <p style="text-align: center; color: #b8b8d1; font-size: 1.2rem; margin-bottom: 3rem;">
+                The journey from digital text to biological molecules
+            </p>
+
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Text to Binary Conversion</h3>
+                        <p>Every character you type has an ASCII code (a number from 0-255). This number is converted into 8-bit binary. For example, "H" becomes 01001000, and "i" becomes 01101001. This universal digital language is the foundation of all computer data.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Binary to DNA Mapping</h3>
+                        <p>DNA has four nucleotide bases: Adenine (A), Thymine (T), Cytosine (C), and Guanine (G). Since 4 = 2², we can represent each pair of bits with one DNA base. By default: 00→A, 01→T, 10→C, 11→G. This elegant mapping mirrors nature's own information storage system.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Sequence Visualization</h3>
+                        <p>The resulting DNA sequence is displayed as a color-coded visualization. Each base is represented by a unique color, making it easy to see the encoded pattern. This visual representation helps understand how digital information transforms into biological sequences.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Decoding Process</h3>
+                        <p>To retrieve the original text, the process is reversed. Each DNA base is converted back to its 2-bit binary equivalent, the binary is grouped into 8-bit chunks (bytes), and each byte is converted back to its ASCII character. The result is your original message, perfectly preserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div id="about" class="page">
+        <div class="about-content">
+            <h1>About DNA Storage</h1>
+            
+            <p>DNA-based data storage represents one of the most promising frontiers in information technology. While traditional storage media degrade over time and require constant power, DNA offers a revolutionary alternative that could preserve humanity's collective knowledge for millennia.</p>
+
+            <h2>Why DNA?</h2>
+            <p>Nature has been using DNA to store genetic information for billions of years. This molecular marvel can encode vast amounts of data in an incredibly small space. A single gram of DNA can theoretically store 215 petabytes of information—that's roughly 85 million Blu-ray discs worth of data.</p>
+
+            <h2>Real-World Applications</h2>
+            <p>Researchers have already successfully encoded books, movies, and entire operating systems into DNA. Organizations like Microsoft and the European Bioinformatics Institute are actively researching DNA storage for long-term archival purposes. The technology could revolutionize how we preserve cultural heritage, scientific research, and historical records.</p>
+
+            <h2>The Challenge</h2>
+            <p>While DNA storage is incredibly promising, current challenges include the high cost of DNA synthesis and sequencing, slower read/write speeds compared to electronic storage, and the need for error correction. However, costs are decreasing rapidly, and researchers are developing more efficient encoding schemes.</p>
+
+            <h2>This Simulator</h2>
+            <p>This educational tool demonstrates the fundamental principles of DNA-based data storage. While simplified compared to real-world implementations, it accurately represents how digital information can be encoded into the four-letter alphabet of life: A, T, C, and G.</p>
+
+            <h2>Course Integration</h2>
+            <p>This project is part of the Engineering of Biology (EOB) Tutorial T04: Nature-Inspired Data Storage Systems, exploring how biological principles can inspire technological solutions for modern computing challenges.</p>
+        </div>
+    </div>
+
+    <script>
+        let currentDNASequence = '';
+        let currentBinary = '';
+        
+        const baseColors = {
+            'A': '#e74c3c',
+            'T': '#3498db',
+            'C': '#2ecc71',
+            'G': '#f39c12'
+        };
+        
+        // Page Navigation
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageName).classList.add('active');
+            
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+        
+        // DNA Background Animation
+        function animateDNABackground() {
+            const canvas = document.getElementById('dnaBackgroundCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const bases = ['A', 'T', 'C', 'G'];
+            const particles = [];
+            
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    base: bases[Math.floor(Math.random() * 4)],
+                    speed: 0.2 + Math.random() * 0.5,
+                    size: 20 + Math.random() * 20
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    ctx.fillStyle = baseColors[p.base];
+                    ctx.globalAlpha = 0.3;
+                    ctx.font = `${p.size}px Arial`;
+                    ctx.fillText(p.base, p.x, p.y);
+                    
+                    p.y += p.speed;
+                    if (p.y > canvas.height) {
+                        p.y = -20;
